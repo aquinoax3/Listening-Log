@@ -6,6 +6,14 @@
 int main() {
  
  std::vector<nlohmann::json> logs;
+
+ nlohmann::json testLog;
+
+ testLog["artist"] = "Clipse";
+ testLog["song_title"] = "Mr.Metoo";
+ testLog["album"] = "Lord Willing";
+
+ logs.push_back(testLog);
   
  std::ifstream file("logs.json");
 
@@ -25,10 +33,10 @@ int main() {
 		 return "Hello World";
 	});
  //TODO: Create POST endpoint for log
- CROW_ROUTE(app,"/log")([](){
+ CROW_ROUTE(app,"/log").methods(crow::HTTPMethod::POST)([&logs](){
 		crow::response res;
 		res.code = 201;
-		res.set_header("Content-Type, application/json");
+		res.set_header("Content-Type", "application/json");
 		
 		nlohmann::json log;
 		
@@ -37,10 +45,13 @@ int main() {
 		std::string album;
 		 
 		std::cout << "Input artist name" << std::endl;
-		std::getLine(std::cin,  artist);
+		std::getline(std::cin,  artist);
+		
 		std::cout << "Input song title" << std::endl;
-		std::getLint(std::cin, song_title)
-		std::cout << "Input album title" << std:endl;
+		std::getline(std::cin, song_title);
+		
+		std::cout << "Input album title" << std::endl;
+		std::getline(std::cin, album);
 		
 		log["artist"] = artist;
 		log["song_title"] = song_title;
@@ -50,17 +61,20 @@ int main() {
 		res.body = log.dump();
 
 		std::ofstream file("log.json");
-		file << logs.dump();
+		file << log.dump();
 		
 		return res;		
 	});
  
 //TODO: Create GET endpoint for log
- CROW_ROUTE(app, "/log")([&jsonArr](){
+ CROW_ROUTE(app, "/log").methods(crow::HTTPMethod::GET)([&logs](){
 		crow::response res;
 		res.code = 200;
 		res.set_header("Content-Type", "application/json");
-		res.body = jsonArr.dump();
+
+		nlohmann::json body = logs;
+		res.body = body.dump();
+		
 		return res;
   	}); 
  
