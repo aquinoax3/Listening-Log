@@ -43,16 +43,7 @@ int main() {
 		std::string artist;
 		std::string song_title;
 		std::string album;
-		 
-		std::cout << "Input artist name" << std::endl;
-		std::getline(std::cin,  artist);
-		
-		std::cout << "Input song title" << std::endl;
-		std::getline(std::cin, song_title);
-		
-		std::cout << "Input album title" << std::endl;
-		std::getline(std::cin, album);
-		
+		 		
 		log["artist"] = artist;
 		log["song_title"] = song_title;
 		log["album"] = album;
