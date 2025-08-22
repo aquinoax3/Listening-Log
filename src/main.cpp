@@ -6,25 +6,22 @@
 int main() {
  
  std::vector<nlohmann::json> logs;
+ 
+ std::string filename = "logs.json";
+ 
+ std::ifstream infile(filename);
 
- nlohmann::json testLog;
+ if (infile) {
+  try {
+     nlohmann::json savedLogs;
+     infile >> savedLogs;
 
- testLog["artist"] = "Clipse";
- testLog["song_title"] = "Mr.Metoo";
- testLog["album"] = "Lord Willing";
-
- logs.push_back(testLog);
-  
- std::ifstream file("logs.json");
-
- if (file) {
-  nlohmann::json savedLogs;
-  file >> savedLogs;
-
-  for (const auto& entry : savedLogs) { 
-   logs.push_back(entry);
-  }
-  
+     for (const auto& entry : savedLogs) { 
+       logs.push_back(entry);
+     }
+   }  catch (const std::exception& e) {
+       std::cerr << "Error Parsing " << filename << ": " << e.what() << std::endl;
+   }
  }
  
  crow::SimpleApp app;
@@ -32,33 +29,31 @@ int main() {
  CROW_ROUTE(app,"/")([](){
 		 return "Hello World";
 	});
- //TODO: Create POST endpoint for log
- CROW_ROUTE(app,"/log").methods(crow::HTTPMethod::POST)([&logs](){
+ 
+ CROW_ROUTE(app,"/logs").methods(crow::HTTPMethod::POST)([&logs](const crow::request& req){
+		
+		nlohmann::json log = nlohmann::json::parse(req.body); 
+		logs.push_back(log); 
+		
 		crow::response res;
 		res.code = 201;
-		res.set_header("Content-Type", "application/json");
-		
-		nlohmann::json log;
-		
-		std::string artist;
-		std::string song_title;
-		std::string album;
-		 		
-		log["artist"] = artist;
-		log["song_title"] = song_title;
-		log["album"] = album;
-		
-		logs.push_back(log);
+		res.set_header("Content-Type", "application/json");		
 		res.body = log.dump();
 
-		std::ofstream file("log.json");
-		file << log.dump();
+		std::ofstream file("logs.json");
+		if (file) {
+		  nlohmann::json allLogs = logs;
+		  file << allLogs.dump();
+		  std::cout << "Logs saved successfully." << std::endl;
+		} else {
+		  std::cerr << "Unable to write logs.json" << std::endl;
+		}
 		
 		return res;		
 	});
  
-//TODO: Create GET endpoint for log
- CROW_ROUTE(app, "/log").methods(crow::HTTPMethod::GET)([&logs](){
+
+ CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs](){
 		crow::response res;
 		res.code = 200;
 		res.set_header("Content-Type", "application/json");
