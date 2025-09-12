@@ -32,7 +32,17 @@ int main() {
  
  CROW_ROUTE(app,"/logs").methods(crow::HTTPMethod::POST)([&logs](const crow::request& req){
 		
-		nlohmann::json log = nlohmann::json::parse(req.body); 
+		
+		nlohmann::json log
+		try {
+		  log = nlohmann::json::parse(req.body);
+		} catch (const std::exception& e) {
+		  std::cerr << "Invalid JSON format" << ": " << e.what() << std::endl;
+		  return crow::response(400);
+		} 
+		
+	
+		
 		logs.push_back(log); 
 		
 		crow::response res;
