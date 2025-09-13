@@ -33,15 +33,28 @@ int main() {
  CROW_ROUTE(app,"/logs").methods(crow::HTTPMethod::POST)([&logs](const crow::request& req){
 		
 		
-		nlohmann::json log
+		nlohmann::json log;
+
 		try {
 		  log = nlohmann::json::parse(req.body);
 		} catch (const std::exception& e) {
 		  std::cerr << "Invalid JSON format" << ": " << e.what() << std::endl;
 		  return crow::response(400);
-		} 
+		}
 		
-	
+		if (log.count("artist") != 1) {
+		  std::cout << "artist was not named, please add artist" << std::endl;
+		  return crow::response(400);
+		}
+
+		if (log.count("song") != 1) {
+		  return crow::response(400);
+		}
+
+		if (log.count("song_title") != 1) { 
+		  return crow::response(400);
+		}
+		
 		
 		logs.push_back(log); 
 		
