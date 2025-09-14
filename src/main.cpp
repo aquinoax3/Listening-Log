@@ -42,16 +42,16 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		if (log.count("artist") != 1) {
+		if (log.contains("artist") != 1) {
 		  std::cout << "artist was not named, please add artist" << std::endl;
 		  return crow::response(400);
 		}
 
-		if (log.count("song") != 1) {
+		if (log.contains("song") != 1) {
 		  return crow::response(400);
 		}
 
-		if (log.count("song_title") != 1) { 
+		if (log.contains("song_title") != 1) { 
 		  return crow::response(400);
 		}
 		
