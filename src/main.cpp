@@ -42,18 +42,17 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		if (log.contains("artist") != 1) {
-		  std::cout << "artist was not named, please add artist" << std::endl;
-		  return crow::response(400);
+		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {
+		    return crow::response(400);
 		}
 
-		if (log.contains("song") != 1) {
-		  return crow::response(400);
+		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
+		  return crow::response(400); 
 		}
 
-		if (log.contains("song_title") != 1) { 
-		  return crow::response(400);
-		}
+		if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) {
+		   return crow::response(400);
+		}	
 		
 		
 		logs.push_back(log); 
