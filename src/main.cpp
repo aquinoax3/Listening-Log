@@ -43,7 +43,18 @@ int main() {
 		}
 		
 		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {
-		    return crow::response(400);
+		nlohmann::json jsonError;
+
+		jsonError["error"] = "artist field is required";
+		jsonError["details"] = "artist field is empty and it must be a string";
+		jsonError["status_code"] = 400;
+
+		crow::response res;
+		res.code = 400;
+		res.set_header("Content-Type", "application/json");
+		res.body = jsonError.dump();
+
+		return res;
 		}
 
 		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
