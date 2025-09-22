@@ -58,11 +58,34 @@ int main() {
 		}
 
 		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
-		  return crow::response(400); 
+		  nlohmann::json jsonError;
+
+		  jsonError["error"] = "song title field is required";
+		  jsonError["details"] = "song title field is empty and it must be a string";
+		  jsonError["status_code"] = 400;
+
+		  crow::response re;
+		  res.code = 400;
+		  res.set_head("Contend-Type", "application/json");
+		  res.body = jsonError.dump();
+
+		  return res; 
+		
 		}
 
 		if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) {
-		   return crow::response(400);
+		   nlohmann::json jsonError;
+
+		   jsonError["error"] = "album field is required";
+		   jsonError["details"] = "album field is empty and it must be a string";
+		   jsonError["status_code"] = 400;
+
+		   crow::response res;
+		   res.code = 400;
+		   res.set_header("Content-Type", "application/json");
+		   res.body = jsonError.dump();
+
+		   return res;
 		}	
 		
 		
