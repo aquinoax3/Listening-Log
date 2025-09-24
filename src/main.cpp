@@ -77,12 +77,12 @@ int main() {
 		crow::response res;
 		res.code = 201;
 		res.set_header("Content-Type", "application/json");		
-		res.body = log.dump();
+		res.body = log.dump(4);
 
 		std::ofstream file("logs.json");
 		if (file) {
 		  nlohmann::json allLogs = logs;
-		  file << allLogs.dump();
+		  file << allLogs.dump(4);
 		  std::cout << "Logs saved successfully." << std::endl;
 		} else {
 		  std::cerr << "Unable to write logs.json" << std::endl;
@@ -98,7 +98,7 @@ int main() {
 		res.set_header("Content-Type", "application/json");
 
 		nlohmann::json body = logs;
-		res.body = body.dump();
+		res.body = body.dump(4);
 		
 		return res;
   	}); 
