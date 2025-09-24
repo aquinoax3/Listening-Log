@@ -3,6 +3,22 @@
 #include <iostream>
 #include <fstream>
 
+
+auto makeErrorResponse(std::string field, std::string details){
+  nlohmann::json jsonError;
+
+  jsonError["error"] = field + " field is required.";
+  jsonError["details"] = details;
+  jsonError["status_code"] = 400;
+
+  crow::response res;
+  res.code = 400;
+  res.set_header("Content-Type", "application/json");
+  res.body = jsonError.dump();
+
+  return res;
+}
+
 int main() {
  
  std::vector<nlohmann::json> logs;
@@ -42,50 +58,17 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {
-		nlohmann::json jsonError;
-
-		jsonError["error"] = "artist field is required";
-		jsonError["details"] = "artist field is empty and it must be a string";
-		jsonError["status_code"] = 400;
-
-		crow::response res;
-		res.code = 400;
-		res.set_header("Content-Type", "application/json");
-		res.body = jsonError.dump();
-
-		return res;
-		}
-
-		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
-		  nlohmann::json jsonError;
-
-		  jsonError["error"] = "song title field is required";
-		  jsonError["details"] = "song title field is empty and it must be a string";
-		  jsonError["status_code"] = 400;
-
-		  crow::response re;
-		  res.code = 400;
-		  res.set_head("Contend-Type", "application/json");
-		  res.body = jsonError.dump();
-
-		  return res; 
+		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {  
+		  return makeErrorResponse("artist","artist field is empty and it must be a string);
 		
 		}
 
-		if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) {
-		   nlohmann::json jsonError;
+		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
+		  return makeErrorResponse("song_title", "song title field is empty and it must be a string"); 
+		}
 
-		   jsonError["error"] = "album field is required";
-		   jsonError["details"] = "album field is empty and it must be a string";
-		   jsonError["status_code"] = 400;
-
-		   crow::response res;
-		   res.code = 400;
-		   res.set_header("Content-Type", "application/json");
-		   res.body = jsonError.dump();
-
-		   return res;
+		if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) { 
+		  return makeErrorResponse("album", "album field is empty and it must be a string");
 		}	
 		
 		
