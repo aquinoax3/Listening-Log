@@ -59,7 +59,7 @@ int main() {
 		}
 		
 		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {  
-		  return makeErrorResponse("artist","artist field is empty and it must be a string);
+		  return makeErrorResponse("artist","artist field is empty and it must be a string");
 		
 		}
 
@@ -73,13 +73,18 @@ int main() {
 		
 		
 		logs.push_back(log); 
+	
+		nlohmann::json success = {
+			{"message", "Log created successfully"},
+			{"log", log}
+		};	
 		
 		crow::response res;
 		res.code = 201;
 		res.set_header("Content-Type", "application/json");		
-		res.body = log.dump(4);
+		res.body = success.dump(4);
 
-		std::ofstream file("logs.json");
+		std::ofstream file("logs.json", std::ios::trunc);
 		if (file) {
 		  nlohmann::json allLogs = logs;
 		  file << allLogs.dump(4);
