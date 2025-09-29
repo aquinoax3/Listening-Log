@@ -19,6 +19,22 @@ auto makeErrorResponse(std::string field, std::string details){
   return res;
 }
 
+std::optional<std::string> validateMetaData(const nlohmann::json& metadata) {
+	if (!metadata.contains("artist") || !metadata["artist"].is_string() || metadata["artist"].get<std::string>().empty()) {  
+	  return "Invalid or missing artist";	
+	}
+
+	if (!metadata.contains("song_title") || !metadata["song_title"].is_string() || metadata["song_title"].get<std::string>().empty()) {
+	  return "Invalid or missing song title";
+	}
+
+	if (!metadata.contains("album") || !metadata["album"].is_string() || metadata["album"].get<std::string>().empty()) { 
+	  return "Invalid or missing album";
+	}
+	
+	return std::nullopt;	
+}
+
 int main() {
  
  std::vector<nlohmann::json> logs;
@@ -58,18 +74,12 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {  
-		  return makeErrorResponse("artist","artist field is empty and it must be a string");
-		
-		}
-
-		if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
-		  return makeErrorResponse("song_title", "song title field is empty and it must be a string"); 
-		}
-
-		if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) { 
-		  return makeErrorResponse("album", "album field is empty and it must be a string");
-		}	
+		std::optional<std::string> validationError =  validateMetaData(log);
+	
+	//TO DO: Figure out how to handle valication error, redefine res schema now that metadata is included	
+	//	if (validationError) {
+	//	  return makeErrorResponse(
+	//	}	
 		
 		
 		logs.push_back(log); 
