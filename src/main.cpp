@@ -2,6 +2,8 @@
 #include "../include/json.hpp"
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <ctime>
 
 
 auto makeErrorResponse(std::string field, std::string details){
@@ -35,6 +37,9 @@ std::optional<std::string> validateMetaData(const nlohmann::json& metadata) {
 	return std::nullopt;	
 }
 
+
+
+
 int main() {
  
  std::vector<nlohmann::json> logs;
@@ -42,6 +47,17 @@ int main() {
  std::string filename = "logs.json";
  
  std::ifstream infile(filename);
+
+
+   // Get the current time point from the system clock
+    auto now = std::chrono::system_clock::now();
+
+    // Convert the time point to a std::time_t for printing (pre-C++20)
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+
+    // Print the current time in a human-readable format
+    std::cout << "Current time: " << std::ctime(&now_c) << std::endl;
+
 
  if (infile) {
   try {
@@ -116,8 +132,10 @@ int main() {
 		nlohmann::json body = logs;
 		
 		nlohmann::json success = {
-		  {"message", "Request succeeded"},
-		  {"logs", body}
+		{"metadata", {
+		    "status", "success" 
+		  }},
+		  {"data", body}
 		};
 
 		res.body = success.dump(4);
