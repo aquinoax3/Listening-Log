@@ -98,12 +98,19 @@ int main() {
  
 
  CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs](){
+		
 		crow::response res;
 		res.code = 200;
 		res.set_header("Content-Type", "application/json");
 
 		nlohmann::json body = logs;
-		res.body = body.dump(4);
+		
+		nlohmann::json success = {
+		  {"message", "Request succeeded"},
+		  {"logs", body}
+		};
+
+		res.body = success.dump(4);
 		
 		return res;
   	}); 
