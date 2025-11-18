@@ -123,18 +123,21 @@ int main() {
 	});
  
 
- CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs](){
+ CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs, &now_c](){
 		
 		crow::response res;
 		res.code = 200;
 		res.set_header("Content-Type", "application/json");
 
 		nlohmann::json body = logs;
+		nlohmann::json metadata = {
+		  {"status", "success"},
+		  {"timestamp", std::ctime(&now_c)}
+		};
+		
 		
 		nlohmann::json success = {
-		{"metadata", {
-		    "status", "success" 
-		  }},
+		{"metadata", metadata},
 		  {"data", body}
 		};
 
