@@ -55,8 +55,20 @@ int main() {
     // Convert the time point to a std::time_t for printing (pre-C++20)
     std::time_t now_c = std::chrono::system_clock::to_time_t(now);
 
+    // Convert to UTC
+    tm* utc = std::gmtime(&now_c);
+
+    // Format time as ISO 8601
+    std::stringstream ss;
+    ss << std::put_time(utc, "%Y-%m-%dT%H:%M:%SZ");
+
+    std::string timestamp = ss.str();
+
+
+    std::cout << "Timestamp : " << timestamp << std::endl;
+
     // Print the current time in a human-readable format
-    std::cout << "Current time: " << std::ctime(&now_c) << std::endl;
+    //std::cout << "Current time: " << std::ctime(&now_c) << std::endl;
 
 
  if (infile) {
