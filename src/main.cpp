@@ -147,7 +147,7 @@ int main() {
 		nlohmann::json body = logs;
 		
 		nlohmann::json data = {
-		  {"log", logs}
+		  {"log", body}
 		};
 		
 		nlohmann::json metadata = {
@@ -159,9 +159,7 @@ int main() {
 		nlohmann::json success = {
 		  {"metadata", metadata},
 		  {"data", data}
-		};
-		
-		// success["data"]["logs"] = body; 
+		};	
 
 		res.body = success.dump(4);
 		
