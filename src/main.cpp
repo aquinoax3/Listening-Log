@@ -38,19 +38,10 @@ std::optional<std::string> validateMetaData(const nlohmann::json& metadata) {
 }
 
 
-
-
-int main() {
- 
- std::vector<nlohmann::json> logs;
- 
- std::string filename = "logs.json";
- 
- std::ifstream infile(filename);
-
+std::string utcTimestamp() {
 
    // Get the current time point from the system clock
-    auto now = std::chrono::system_clock::now();
+    std::chrono::time_point now = std::chrono::system_clock::now();
 
     // Convert the time point to a std::time_t for printing (pre-C++20)
     std::time_t now_c = std::chrono::system_clock::to_time_t(now);
@@ -69,6 +60,18 @@ int main() {
 
     // Print the current time in a human-readable format
     //std::cout << "Current time: " << std::ctime(&now_c) << std::endl;
+
+   return timestamp;
+
+}
+
+int main() {
+ 
+ std::vector<nlohmann::json> logs;
+ 
+ std::string filename = "logs.json";
+ 
+ std::ifstream infile(filename);
 
 
  if (infile) {
@@ -135,7 +138,7 @@ int main() {
 	});
  
 
- CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs, &now_c](){
+ CROW_ROUTE(app, "/logs").methods(crow::HTTPMethod::GET)([&logs](){
 		
 		crow::response res;
 		res.code = 200;
@@ -144,7 +147,7 @@ int main() {
 		nlohmann::json body = logs;
 		nlohmann::json metadata = {
 		  {"status", "success"},
-		  {"timestamp", std::ctime(&now_c)}
+		  {"timestamp", utcTimestamp()}
 		};
 		
 		
