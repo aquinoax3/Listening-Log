@@ -113,11 +113,20 @@ int main() {
 		//}	
 		
 		
-		logs.push_back(log); 
-	
+		logs.push_back(log);
+
+		nlohmann::json metadata = {
+		  {"status", "success"},
+		  {"timestamp", utcTimestamp()}
+		}; 
+		
+		nlohmann::json log = {
+		  {"log", log}
+		};
+			
 		nlohmann::json success = {
-			{"message", "Log created successfully"},
-			{"log", log}
+			{"metadata", metadata},
+			{"data", log}
 		};	
 		
 		crow::response res;
