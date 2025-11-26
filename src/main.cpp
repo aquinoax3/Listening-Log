@@ -107,10 +107,10 @@ int main() {
 		
 		std::optional<std::string> validationError =  validateMetaData(log);
 	
-	//TO DO: Figure out how to handle valication error, redefine res schema now that metadata is included	
-	//	if (validationError) {
-	//	  return makeErrorResponse(
-	//	}	
+	//TO DO: Figure out how to handle validation error, redefine res schema now that metadata is included	
+		//if (validationError) {
+		  //return makeErrorResponse(validationError);
+		//}	
 		
 		
 		logs.push_back(log); 
@@ -145,6 +145,11 @@ int main() {
 		res.set_header("Content-Type", "application/json");
 
 		nlohmann::json body = logs;
+		
+		nlohmann::json data = {
+		  {"log", logs}
+		};
+		
 		nlohmann::json metadata = {
 		  {"status", "success"},
 		  {"timestamp", utcTimestamp()}
@@ -152,9 +157,11 @@ int main() {
 		
 		
 		nlohmann::json success = {
-		{"metadata", metadata},
-		  {"data", body}
+		  {"metadata", metadata},
+		  {"data", data}
 		};
+		
+		// success["data"]["logs"] = body; 
 
 		res.body = success.dump(4);
 		
