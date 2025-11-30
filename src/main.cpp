@@ -5,22 +5,6 @@
 #include <chrono>
 #include <ctime>
 
-
-auto makeErrorResponse(std::string field, std::string details){
-  nlohmann::json jsonError;
-
-  jsonError["error"] = field + " field is required.";
-  jsonError["details"] = details;
-  jsonError["status_code"] = 400;
-
-  crow::response res;
-  res.code = 400;
-  res.set_header("Content-Type", "application/json");
-  res.body = jsonError.dump();
-
-  return res;
-}
-
 std::optional<std::string> validateMetaData(const nlohmann::json& metadata) {
 	if (!metadata.contains("artist") || !metadata["artist"].is_string() || metadata["artist"].get<std::string>().empty()) {  
 	  return "Invalid or missing artist";	
@@ -63,6 +47,31 @@ std::string utcTimestamp() {
 
    return timestamp;
 
+}
+
+
+auto makeErrorResponse(std::string field, std::string details){
+   
+  nlohmann::json metadata = {
+    {"status", "error"},
+    {"timestamp", utcTimestamp()} 
+  };
+
+  nlohmann::json jsonError;
+  
+  jsonError["data"]["error"] = {
+    {"field", field},
+    {"details", details}
+  };
+  
+  jsonError["metadata"] = metadata;
+   
+  crow::response res;
+  res.code = 400;
+  res.set_header("Content-Type", "application/json");
+  res.body = jsonError.dump();
+
+  return res;
 }
 
 int main() {
@@ -108,9 +117,9 @@ int main() {
 		std::optional<std::string> validationError =  validateMetaData(log);
 	
 	//TO DO: Figure out how to handle validation error, redefine res schema now that metadata is included	
-		//if (validationError) {
-		  //return makeErrorResponse(validationError);
-		//}	
+		if (validationError) {
+		  return makeErrorResponse("validation", *validationError);
+		}	
 		
 		
 		logs.push_back(log);
@@ -120,13 +129,13 @@ int main() {
 		  {"timestamp", utcTimestamp()}
 		}; 
 		
-		nlohmann::json log = {
+		nlohmann::json data = {
 		  {"log", log}
 		};
 			
 		nlohmann::json success = {
 			{"metadata", metadata},
-			{"data", log}
+			{"data", data}
 		};	
 		
 		crow::response res;
