@@ -50,7 +50,7 @@ std::string utcTimestamp() {
 }
 
 
-auto makeErrorResponse(std::string field, std::string details){
+crow::response makeErrorResponse(std::string field, std::string details){
    
   nlohmann::json metadata = {
     {"status", "error"},
