@@ -111,7 +111,6 @@ int main() {
 		
 		std::optional<std::string> validationError =  validateLogData(log);
 	
-	//TO DO: Figure out how to handle validation error, redefine res schema now that metadata is included	
 		if (validationError) {
 		  return makeErrorResponse("validation", *validationError);
 		}	
