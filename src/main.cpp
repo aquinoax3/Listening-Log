@@ -39,18 +39,12 @@ std::string utcTimestamp() {
 
     std::string timestamp = ss.str();
 
-
-    std::cout << "Timestamp : " << timestamp << std::endl;
-
-    // Print the current time in a human-readable format
-    //std::cout << "Current time: " << std::ctime(&now_c) << std::endl;
-
-   return timestamp;
+    return timestamp;
 
 }
 
 
-crow::response makeErrorResponse(std::string field, std::string details){
+crow::response makeErrorResponse(const std::string& field, const std::string& details){
    
   nlohmann::json metadata = {
     {"status", "error"},
@@ -59,12 +53,13 @@ crow::response makeErrorResponse(std::string field, std::string details){
 
   nlohmann::json jsonError;
   
+  jsonError["metadata"] = metadata;
+  
   jsonError["data"]["error"] = {
     {"field", field},
     {"details", details}
   };
   
-  jsonError["metadata"] = metadata;
    
   crow::response res;
   res.code = 400;
