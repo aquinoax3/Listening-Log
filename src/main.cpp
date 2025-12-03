@@ -5,16 +5,16 @@
 #include <chrono>
 #include <ctime>
 
-std::optional<std::string> validateMetaData(const nlohmann::json& metadata) {
-	if (!metadata.contains("artist") || !metadata["artist"].is_string() || metadata["artist"].get<std::string>().empty()) {  
+std::optional<std::string> validateLogData(const nlohmann::json& log) {
+	if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {  
 	  return "Invalid or missing artist";	
 	}
 
-	if (!metadata.contains("song_title") || !metadata["song_title"].is_string() || metadata["song_title"].get<std::string>().empty()) {
+	if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
 	  return "Invalid or missing song title";
 	}
 
-	if (!metadata.contains("album") || !metadata["album"].is_string() || metadata["album"].get<std::string>().empty()) { 
+	if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) { 
 	  return "Invalid or missing album";
 	}
 	
@@ -109,7 +109,7 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		std::optional<std::string> validationError =  validateMetaData(log);
+		std::optional<std::string> validationError =  validateLogData(log);
 	
 	//TO DO: Figure out how to handle validation error, redefine res schema now that metadata is included	
 		if (validationError) {
