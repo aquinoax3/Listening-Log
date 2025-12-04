@@ -5,19 +5,32 @@
 #include <chrono>
 #include <ctime>
 
-std::optional<std::string> validateLogData(const nlohmann::json& log) {
-	if (!log.contains("artist") || !log["artist"].is_string() || log["artist"].get<std::string>().empty()) {  
-	  return "Invalid or missing artist";	
-	}
-
-	if (!log.contains("song_title") || !log["song_title"].is_string() || log["song_title"].get<std::string>().empty()) {
-	  return "Invalid or missing song title";
-	}
-
-	if (!log.contains("album") || !log["album"].is_string() || log["album"].get<std::string>().empty()) { 
-	  return "Invalid or missing album";
-	}
+std::optional<std::pair<std::string, std::string>> validateLogData(const nlohmann::json& log) {
 	
+	std::pair<std::string, std::string> result;	
+	
+	if (!log.contains("artist")) {
+	  result.first =  "artist";
+	  result.second =  "Missing required field";
+	  
+	  return result;
+	}
+	if (!log["artist"].is_string()) {
+	  result.first =  "artist";
+	  result.second =  "Must be a string";
+	  
+	  return result;
+
+	}
+	if (log["artist"].get<std::string>().empty()) {  
+  	  result.first =  "artist";
+	  result.second =  "Cannot be empty";
+	  
+	  return result;
+
+	
+	}
+
 	return std::nullopt;	
 }
 
@@ -109,10 +122,10 @@ int main() {
 		  return crow::response(400);
 		}
 		
-		std::optional<std::string> validationError =  validateLogData(log);
+		std::optional<std::pair<std::string, std::string>> validationError =  validateLogData(log);
 	
 		if (validationError) {
-		  return makeErrorResponse("validation", *validationError);
+		  return makeErrorResponse(validationError->first, validationError->second);
 		}	
 		
 		
