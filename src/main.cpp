@@ -15,6 +15,7 @@ std::optional<std::pair<std::string, std::string>> validateLogData(const nlohman
 	  
 	  return result;
 	}
+
 	if (!log["artist"].is_string()) {
 	  result.first =  "artist";
 	  result.second =  "Must be a string";
@@ -22,15 +23,17 @@ std::optional<std::pair<std::string, std::string>> validateLogData(const nlohman
 	  return result;
 
 	}
+
 	if (log["artist"].get<std::string>().empty()) {  
   	  result.first =  "artist";
 	  result.second =  "Cannot be empty";
 	  
 	  return result;
-
 	
 	}
-
+	
+	//TODO: Add the remaining fields to be checked
+	
 	return std::nullopt;	
 }
 
