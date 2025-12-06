@@ -33,7 +33,53 @@ std::optional<std::pair<std::string, std::string>> validateLogData(const nlohman
 	}
 	
 	//TODO: Add the remaining fields to be checked
+	if (!log.contains("song_title")) {
+	  result.first =  "song_title";
+	  result.second =  "Missing required field";
 	
+	  return result;
+        }
+
+      	if (!log["song_title"].is_string()) {
+	  result.first =  "song_title";
+	  result.second =  "Must be a string";
+	
+	  return result;
+
+        }
+
+      	if (log["song_title"].get<std::string>().empty()) {  
+	  result.first =  "song_title";
+	  result.second =  "Cannot be empty";
+	
+	  return result;
+      
+      	}
+      
+	if (!log.contains("album")) {
+	  result.first =  "album";
+	  result.second =  "Missing required field";
+	  
+	  return result;
+	}
+
+	if (!log["album"].is_string()) {
+	  result.first =  "album";
+	  result.second =  "Must be a string";
+	  
+	  return result;
+
+	}
+
+	if (log["album"].get<std::string>().empty()) {  
+  	  result.first =  "album";
+	  result.second =  "Cannot be empty";
+	  
+	  return result;
+	
+	}
+
+
 	return std::nullopt;	
 }
 
