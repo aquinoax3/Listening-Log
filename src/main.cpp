@@ -4,6 +4,8 @@
 #include <fstream>
 #include <chrono>
 #include <ctime>
+#include <random>
+
 
 std::optional<std::pair<std::string, std::string>> validateLogData(const nlohmann::json& log) {
 	
@@ -131,6 +133,14 @@ crow::response makeErrorResponse(const std::string& field, const std::string& de
   return res;
 }
 
+std::string generateId() {
+
+  std::string timestamp = utcTimestamp();
+  std::string randomNumber;
+
+
+}
+
 int main() {
  
  std::vector<nlohmann::json> logs;
@@ -138,7 +148,17 @@ int main() {
  std::string filename = "logs.json";
  
  std::ifstream infile(filename);
+ 
+ // Get random number from hardware to seed
+ std::random_device rd;
 
+ // random generator
+ std::mt19937 gen(rd());
+
+ // define the range of random numbers
+ std::uniform_int_distribution<int> dist(1,9);
+
+ std::cout << "random: " << dist(gen) << std::endl;
 
  if (infile) {
   try {
