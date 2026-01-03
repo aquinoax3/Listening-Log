@@ -133,12 +133,15 @@ crow::response makeErrorResponse(const std::string& field, const std::string& de
   return res;
 }
 
-std::string generateId() {
+std::string generateId(std::mt19937 generator) {
 
   std::string timestamp = utcTimestamp();
-  std::string randomNumber;
 
+  std::uniform_int_distribution<int> dist(1,9);
+  
+  std::string randomNumber = std::to_string(dist(generator));
 
+  return timestamp + "-" + randomNumber; 
 }
 
 int main() {
@@ -155,10 +158,8 @@ int main() {
  // random generator
  std::mt19937 gen(rd());
 
- // define the range of random numbers
- std::uniform_int_distribution<int> dist(1,9);
-
- std::cout << "random: " << dist(gen) << std::endl;
+ std::string testId = generateId(gen);
+ std::cout << "Random Test Id: " << testId << std::endl;
 
  if (infile) {
   try {
