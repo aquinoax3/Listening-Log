@@ -180,7 +180,7 @@ int main() {
 		 return "Hello World";
 	});
  
- CROW_ROUTE(app,"/logs").methods(crow::HTTPMethod::POST)([&logs](const crow::request& req){
+ CROW_ROUTE(app,"/logs").methods(crow::HTTPMethod::POST)([&logs, &gen](const crow::request& req){
 		
 		
 		nlohmann::json log;
@@ -198,6 +198,8 @@ int main() {
 		  return makeErrorResponse(validationError->first, validationError->second);
 		}	
 		
+		std::string id = generateId(gen);
+		log["id"] = id;	
 		
 		logs.push_back(log);
 
